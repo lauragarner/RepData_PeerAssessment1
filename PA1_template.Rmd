@@ -51,8 +51,13 @@ interval.steps<- aggregate(steps~interval, activity, mean)
 #Plot the average steps
 interval.plot<- qplot(interval, steps, data=interval.steps, geom="line") + labs(x="Interval", y="Steps", title="Average steps taken for each interval of time")
 interval.plot
+
+#Identify the max value and the corresponding interval
+max.step<- max(interval.steps$steps)
+max.interval<- interval.steps[interval.steps$steps==max.step, 1]
 ```
 
+The maximum number of average steps taken in an interval is `r max.step`, which occurs at interval `r max.interval`.
 
 ## Imputing missing values
 Missing values have been replaced with the mean steps for that relevant interval. For example, if the number of steps for interval '1055' is NA for the date '2012-11-24', then the steps for that particular interval have been replaced with the average number of steps for interval '1055'. 
@@ -63,15 +68,9 @@ The code for imputing these NA values is below:
 # Add the data frame created earlier to the activity data to give the average number of steps for each interval
 imputed<- merge(activity, interval.steps, by = "interval", all.x = TRUE)
 
-#Add a new column to this data frame for the original steps values (including NA values)
-imputed$steps<- imputed$steps.x
+#Add a new column to this data frame for the new imputed step values
+imputed$steps<- ifelse(is.na(imputed$steps.x), imputed$steps.y, imputed$steps.x)
 
-#Replace any of the NA values in this new column with the mean steps for that interval. Note, a warning will be given however the resulting
-# dataset is correct
-imputed$steps[is.na(imputed$steps)]<- imputed$steps.y
-
-#Order the data frame
-imputed<- imputed[order(imputed$date),]
 ```
 
 A histogram using the imputed values is shown here:
@@ -90,7 +89,7 @@ imputed.median<- as.numeric(median(total.imputed$steps))
 
 With the imputed data, the mean steps per day is `r imputed.mean`, and the median steps per day is `r imputed.median`. 
 
-We see the mean has dropped; this is due to the NA values being ignored in the first calculation and being replaced with smaller values in the imputed data.
+We see the mean and the median have essentially stayed the same.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 

@@ -62,6 +62,13 @@ interval.plot
 
 ![](PA1_template_files/figure-html/time-1.png)<!-- -->
 
+```r
+#Identify the max value and the corresponding interval
+max.step<- max(interval.steps$steps)
+max.interval<- interval.steps[interval.steps$steps==max.step, 1]
+```
+
+The maximum number of average steps taken in an interval is 206.17, which occurs at interval 835.
 
 ## Imputing missing values
 Missing values have been replaced with the mean steps for that relevant interval. For example, if the number of steps for interval '1055' is NA for the date '2012-11-24', then the steps for that particular interval have been replaced with the average number of steps for interval '1055'. 
@@ -73,22 +80,8 @@ The code for imputing these NA values is below:
 # Add the data frame created earlier to the activity data to give the average number of steps for each interval
 imputed<- merge(activity, interval.steps, by = "interval", all.x = TRUE)
 
-#Add a new column to this data frame for the original steps values (including NA values)
-imputed$steps<- imputed$steps.x
-
-#Replace any of the NA values in this new column with the mean steps for that interval. Note, a warning will be given however the resulting
-# dataset is correct
-imputed$steps[is.na(imputed$steps)]<- imputed$steps.y
-```
-
-```
-## Warning in imputed$steps[is.na(imputed$steps)] <- imputed$steps.y: number
-## of items to replace is not a multiple of replacement length
-```
-
-```r
-#Order the data frame
-imputed<- imputed[order(imputed$date),]
+#Add a new column to this data frame for the new imputed step values
+imputed$steps<- ifelse(is.na(imputed$steps.x), imputed$steps.y, imputed$steps.x)
 ```
 
 A histogram using the imputed values is shown here:
@@ -110,9 +103,9 @@ imputed.mean<- mean(total.imputed$steps)
 imputed.median<- as.numeric(median(total.imputed$steps))
 ```
 
-With the imputed data, the mean steps per day is 9371.44, and the median steps per day is 10395. 
+With the imputed data, the mean steps per day is 10766.19, and the median steps per day is 10766.19. 
 
-We see the mean has dropped; this is due to the NA values being ignored in the first calculation and being replaced with smaller values in the imputed data.
+We see the mean and the median have essentially stayed the same.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
