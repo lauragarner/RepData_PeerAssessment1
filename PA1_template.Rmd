@@ -76,7 +76,7 @@ imputed<- imputed[order(imputed$date),]
 
 A histogram using the imputed values is shown here:
 
-```{r imputed hist}
+```{r imputedhist}
 # Create a new dataset to calculate the total steps per day on the imputed data
 total.imputed<- aggregate(steps~date, imputed, sum)
 

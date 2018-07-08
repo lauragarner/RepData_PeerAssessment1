@@ -102,7 +102,7 @@ total.imputed<- aggregate(steps~date, imputed, sum)
 hist(total.imputed$steps, xlab = "Steps", main = "Histogram of total steps taken per day (imputed)")
 ```
 
-![](PA1_template_files/figure-html/imputed hist-1.png)<!-- -->
+![](PA1_template_files/figure-html/imputedhist-1.png)<!-- -->
 
 ```r
 # Calculate the mean and median steps per day
